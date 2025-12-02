@@ -87,14 +87,8 @@ public class Exercise4Categories {
     public static void categoryData() {
         String query = "SELECT CategoryID, CategoryName FROM Categories";
 
-        ResultSet results = null;
-        PreparedStatement statement = null;
-        Connection connection = null;
-
-        try {
-            connection = DriverManager.getConnection(url, user, password);
-            statement = connection.prepareStatement(query);
-            results = statement.executeQuery();
+        try (PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet results = statement.executeQuery()){
 
             System.out.println("CategoryID \t CategoryName");
             System.out.println("-----------------------------");
@@ -106,29 +100,6 @@ public class Exercise4Categories {
         }
         catch (SQLException e) {
             e.printStackTrace();
-        }
-        finally {
-            if (results != null) {
-                try {
-                    results.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
@@ -146,15 +117,9 @@ public class Exercise4Categories {
             String query = "SELECT CategoryID, ProductID, ProductName, UnitPrice, UnitsInStock " +
                     "FROM Products WHERE CategoryID = ?";
 
-            ResultSet results = null;
-            PreparedStatement statement = null;
-            Connection connection = null;
-
-            try {
-                connection = DriverManager.getConnection(url, user, password);
-                statement = connection.prepareStatement(query);
+            try (PreparedStatement statement = connection.prepareStatement(query);
+                 ResultSet results = statement.executeQuery()) {
                 statement.setInt(1, categoryID);
-                results = statement.executeQuery();
 
                 System.out.println("CategoryID \t ProductID \t ProductName \t UnitPrice \t UnitsInStock");
                 System.out.println("-----------------------------------------------------------");
@@ -170,30 +135,6 @@ public class Exercise4Categories {
             catch (SQLException e) {
                 e.printStackTrace();
             }
-            finally {
-                if (results != null) {
-                    try {
-                        results.close();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                }
-                if (statement != null) {
-                    try {
-                        statement.close();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                }
-                if (connection != null) {
-                    try {
-                        connection.close();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
         }
 
         else if (userInput == 2) {
@@ -213,5 +154,4 @@ public class Exercise4Categories {
             e.printStackTrace();
         }
     }
-
 }
