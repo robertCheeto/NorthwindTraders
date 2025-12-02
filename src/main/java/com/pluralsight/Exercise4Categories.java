@@ -4,11 +4,12 @@ import java.sql.*;
 import java.util.Scanner;
 
 public class Exercise4Categories {
-    public static final String url = "jdbc:mysql://127.0.0.1:3306/northwind";
-    public static final String user = "root";
-    public static final String password = "yearup";
-    public static final Scanner keyboard = new Scanner(System.in);
-    public static boolean running = true;
+    private static final String url = "jdbc:mysql://127.0.0.1:3306/northwind";
+    private static final String user = "root";
+    private static final String password = "yearup";
+    private static Connection connection = null;
+    private static final Scanner keyboard = new Scanner(System.in);
+    private static boolean running = true;
 
     public static void main(String[] args) {
         while (running) {
@@ -19,6 +20,8 @@ public class Exercise4Categories {
             System.out.println("3) Display ALL Categories");
             System.out.println("99) Exit Program");
             System.out.print("Enter input here: ");
+
+            loadConnection();
 
             int userInput = keyboard.nextInt();
             keyboard.nextLine();
@@ -39,21 +42,10 @@ public class Exercise4Categories {
     }
 
     public static void productData() {
-        String query = "SELECT ProductID, ProductName, UnitPrice, UnitsInStock " +
-                "FROM Products WHERE ProductID = ? OR ProductName LIKE ?";
+        String query = "SELECT ProductID, ProductName, UnitPrice, UnitsInStock FROM Products";
 
-        ResultSet results = null;
-        PreparedStatement statement = null;
-        Connection connection = null;
-
-        try {
-            connection = DriverManager.getConnection(url, user, password);
-            statement = connection.prepareStatement(query);
-
-            statement.setInt(1, 1);
-            statement.setString(2, "%%");
-
-            results = statement.executeQuery();
+        try (PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet results = statement.executeQuery()) {
 
             System.out.println("ProductID \t ProductName \t UnitPrice \t UnitsInStock");
             System.out.println("-----------------------------------------------------------");
@@ -68,47 +60,13 @@ public class Exercise4Categories {
         catch (SQLException e) {
             e.printStackTrace();
         }
-        finally {
-            if (results != null) {
-                try {
-                    results.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
     }
 
     public static void customerData() {
-        String query = "SELECT CompanyName, ContactName, City, Country, Phone " +
-                "FROM Customers WHERE CustomerID = ? OR CompanyName LIKE ? " +
-                "ORDER BY Country";
+        String query = "SELECT CompanyName, ContactName, City, Country, Phone FROM Customers ORDER BY Country";
 
-        ResultSet results = null;
-        PreparedStatement statement = null;
-        Connection connection = null;
-
-        try {
-            connection = DriverManager.getConnection(url, user, password);
-            statement = connection.prepareStatement(query);
-
-            statement.setInt(1, 1);
-            statement.setString(2, "%%");
-            results = statement.executeQuery();
+        try (PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet results = statement.executeQuery()){
 
             System.out.println("CustomerID \t ContactName \t CompanyName \t City \t Country \t Phone");
             System.out.println("-----------------------------------------------------------");
@@ -123,29 +81,6 @@ public class Exercise4Categories {
         }
         catch (SQLException e) {
             e.printStackTrace();
-        }
-        finally {
-            if (results != null) {
-                try {
-                    results.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
@@ -267,6 +202,15 @@ public class Exercise4Categories {
 
         else {
             System.out.println("Enter a valid input.");
+        }
+    }
+
+    public static void loadConnection() {
+        try {
+            connection = DriverManager.getConnection(url, user, password);
+        } catch (SQLException e) {
+            System.out.println("error when loading connection");
+            e.printStackTrace();
         }
     }
 
