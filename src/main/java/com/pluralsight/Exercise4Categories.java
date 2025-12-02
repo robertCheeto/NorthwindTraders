@@ -26,7 +26,10 @@ public class Exercise4Categories {
             switch (userInput) {
                 case 1 -> productData();
                 case 2 -> customerData();
-                case 3 -> categoryData();
+                case 3 -> {
+                    categoryData();
+                    productSearchByCategoryID();
+                }
                 case 99 -> running = false;
                 default -> System.out.println("Please enter a valid input.");
             }
@@ -156,10 +159,6 @@ public class Exercise4Categories {
         try {
             connection = DriverManager.getConnection(url, user, password);
             statement = connection.prepareStatement(query);
-
-            //statement.setInt(1, 1);
-            //statement.setString(2, "%%");
-
             results = statement.executeQuery();
 
             System.out.println("CategoryID \t CategoryName");
@@ -196,5 +195,10 @@ public class Exercise4Categories {
                 }
             }
         }
+    }
+
+    public static void productSearchByCategoryID() {
+        System.out.println("Do you want to search for a product based on CategoryID?");
+
     }
 }
