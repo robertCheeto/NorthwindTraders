@@ -8,25 +8,29 @@ public class Exercise3Menus {
     public static final String user = "root";
     public static final String password = "yearup";
     public static final Scanner keyboard = new Scanner(System.in);
+    public static boolean running = true;
 
     public static void main(String[] args) {
-        System.out.println("What table do you want to see?");
-        System.out.println("1) Display All Product Data");
-        System.out.println("2) Display ALL Customer Data");
-        System.out.println("99) Exit Program");
-        System.out.print("Enter input here: ");
-        int userInput = keyboard.nextInt();
-        keyboard.nextLine();
+        while (running) {
+            System.out.println("\n-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-\n");
+            System.out.println("What table do you want to see?");
+            System.out.println("1) Display All Product Data");
+            System.out.println("2) Display ALL Customer Data");
+            System.out.println("99) Exit Program");
+            System.out.print("Enter input here: ");
 
-        switch (userInput) {
-            case 1 -> productData();
-            case 2 -> customerData();
-            case 99 -> {
-                keyboard.close();
-                System.exit(0);
+            int userInput = keyboard.nextInt();
+            keyboard.nextLine();
+
+            switch (userInput) {
+                case 1 -> productData();
+                case 2 -> customerData();
+                case 99 -> running = false;
+                default -> System.out.println("Please enter a valid input.");
             }
-            default -> System.out.println("Please enter a valid input.");
         }
+        keyboard.close();
+        System.exit(0);
     }
 
         public static void productData() {
