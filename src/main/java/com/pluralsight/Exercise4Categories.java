@@ -105,7 +105,7 @@ public class Exercise4Categories {
 
     public static void productSearchByCategoryID() {
         System.out.println("Do you want to search for a product based on CategoryID?");
-        System.out.println("1 = Yes | 2 = No");
+        System.out.println("1 = Yes | any other input = No");
         int userInput = keyboard.nextInt();
         keyboard.nextLine();
 
@@ -117,32 +117,28 @@ public class Exercise4Categories {
             String query = "SELECT CategoryID, ProductID, ProductName, UnitPrice, UnitsInStock " +
                     "FROM Products WHERE CategoryID = ?";
 
-            try (PreparedStatement statement = connection.prepareStatement(query);
-                 ResultSet results = statement.executeQuery()) {
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
                 statement.setInt(1, categoryID);
 
-                System.out.println("CategoryID \t ProductID \t ProductName \t UnitPrice \t UnitsInStock");
-                System.out.println("-----------------------------------------------------------");
-                while (results.next()) {
-                    int catID = results.getInt("CategoryID");
-                    int prodID = results.getInt("ProductID");
-                    String prodName = results.getString("ProductName");
-                    int unitPrice = results.getInt("UnitPrice");
-                    int unitStock = results.getInt("UnitsInStock");
-                    System.out.println(catID + "\t" + prodID + "\t" + prodName + "\t" + unitPrice + "\t" + unitStock);
+                try (ResultSet results = statement.executeQuery()) {
+
+                    System.out.println("CategoryID \t ProductID \t ProductName \t UnitPrice \t UnitsInStock");
+                    System.out.println("-----------------------------------------------------------");
+                    while (results.next()) {
+                        int catID = results.getInt("CategoryID");
+                        int prodID = results.getInt("ProductID");
+                        String prodName = results.getString("ProductName");
+                        int unitPrice = results.getInt("UnitPrice");
+                        int unitStock = results.getInt("UnitsInStock");
+                        System.out.println(catID + "\t" + prodID + "\t" + prodName + "\t" + unitPrice + "\t" + unitStock);
+                    }
                 }
             }
             catch (SQLException e) {
                 e.printStackTrace();
             }
-        }
-
-        else if (userInput == 2) {
+        } else {
             System.out.println("Have a nice day!");
-        }
-
-        else {
-            System.out.println("Enter a valid input.");
         }
     }
 
