@@ -199,6 +199,75 @@ public class Exercise4Categories {
 
     public static void productSearchByCategoryID() {
         System.out.println("Do you want to search for a product based on CategoryID?");
+        System.out.println("1 = Yes | 2 = No");
+        int userInput = keyboard.nextInt();
+        keyboard.nextLine();
 
+        if (userInput == 1) {
+            System.out.print("Enter the CategoryID you want to search for: ");
+            int categoryID = keyboard.nextInt();
+            keyboard.nextLine();
+
+            String query = "SELECT CategoryID, ProductID, ProductName, UnitPrice, UnitsInStock " +
+                    "FROM Products WHERE CategoryID = ?";
+
+            ResultSet results = null;
+            PreparedStatement statement = null;
+            Connection connection = null;
+
+            try {
+                connection = DriverManager.getConnection(url, user, password);
+                statement = connection.prepareStatement(query);
+                statement.setInt(1, categoryID);
+                results = statement.executeQuery();
+
+                System.out.println("CategoryID \t ProductID \t ProductName \t UnitPrice \t UnitsInStock");
+                System.out.println("-----------------------------------------------------------");
+                while (results.next()) {
+                    int catID = results.getInt("CategoryID");
+                    int prodID = results.getInt("ProductID");
+                    String prodName = results.getString("ProductName");
+                    int unitPrice = results.getInt("UnitPrice");
+                    int unitStock = results.getInt("UnitsInStock");
+                    System.out.println(catID + "\t" + prodID + "\t" + prodName + "\t" + unitPrice + "\t" + unitStock);
+                }
+            }
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+            finally {
+                if (results != null) {
+                    try {
+                        results.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (statement != null) {
+                    try {
+                        statement.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (connection != null) {
+                    try {
+                        connection.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+        }
+
+        else if (userInput == 2) {
+            System.out.println("Have a nice day!");
+        }
+
+        else {
+            System.out.println("Enter a valid input.");
+        }
     }
+
 }
